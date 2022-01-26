@@ -93,11 +93,78 @@
 }
 
   </style>
+  <script> 
+    function test(event)
+        {
+            let code=event.which;
+            if(code>47&&code<58)
+            return false;
+            else
+            return true;
+        }
+        
+    function test()
+    {
+      
+      var uname=document.getElementById('uname').value;
+      var phone=document.getElementById('phone').value;
+      var psw=document.getElementById('psw').value;
+      var Email=document.getElementById('Email').value;
+      
+      if (uname.value == "") {
+    window.alert("Please enter your user name.");
+    uname.focus();
+    return false;
+  }
+
+  if (phone.value == "") {
+    window.alert("Please enter your phone number.");
+    phone.focus();
+    return false;
+  }
+
+  if (psw.value == "") {
+    window.alert(
+    "Please enter your password.");
+    psw.focus();
+    return false;
+  }
+
+  if (Email.value == "") {
+    window.alert(
+    "Please enter your official mail id.");
+    Email.focus();
+    return false;
+  }
+
+  if(uname.value.trim()=="")
+  {
+    alert("Blank");
+    uname.style.border="solid 3px red";
+    document.getElementById("lbuser").style.visibility="visible";
+    return false;
+  }
+           else if(psw.value.trim()=="")
+           {
+               alert("Blank");
+               return false;
+           }
+           else if(psw.value.trim().length<5)
+           {
+               alert("Password too short");
+               return false;
+           }
+
+           
+        }
+
+  </script>
 </head>
 
 <body>
 
-  <!-- ======= Property Search Section ======= -->
+  
+
   <div class="click-closed"></div>
   <!--/ Form Search Star /-->
   <div class="box-collapse">
@@ -106,20 +173,24 @@
     </div>
     <span class="close-box-collapse right-boxed bi bi-x"></span>
     <div class="box-collapse-wrap form">
-      <form action="action_page.php" method="post">
+      <form action="property-single.html" onsubmit="return test()">
       
       
         <div class="container">
           <label for="uname"><b>Username</b></label>
-          <input type="text" placeholder="Enter Username" name="uname" required>
-      
+          <input type="text" onkeypress="return test(event)" placeholder="Enter Username" name="uname">
+          <label id="lbuser" style="color: red; visibility: hidden;">Invalid User</label><br>
+
+          <label for="phone"><b>Phone Number</b></label>
+          <input type="number" placeholder="Enter phone number" name="phone">
+          <br>
           <label for="psw"><b>Password</b></label>
-          <input type="password" placeholder="Enter Password" name="psw" required>
+          <input type="password" placeholder="Enter Password" name="psw">
       
-          <button type="submit">Login</button>
-          <label>
-            <input type="checkbox" checked="checked" name="remember"> Remember me
-          </label>
+          <label for ="Email"><b>Official Mail</b></label>
+          <input type="email" placeholder="Enter your official mail" name="Email">
+          
+          <button type="submit">Submit</button>
         </div>
       
         <div class="container" style="background-color:#f1f1f1">
@@ -131,8 +202,10 @@
         <p>If you want to sign-up, contact the manager of the project.</p>
       </div>
     </div>
-  </div><!-- End Property Search Section -->>
-  <body onload="loadXML()">
+  </div><!-- End Property Search Section -->
+
+
+
   <!-- ======= Header/Navbar ======= -->
   <nav class="navbar navbar-default navbar-trans navbar-expand-lg fixed-top">
     <div class="container">
@@ -189,8 +262,75 @@
     </div>
   </nav><!-- End Header/Navbar -->
   <article>
-      
+    <br><br><br>
+    <br><br><br>
+    <br><br><br>
+    <h2>Our Managers and their current Projects</h2>
+    <p><button onclick="displayTable(xmlDoc)">Click here to view</button></p>
 
+    <script>
+      function loadXML() {
+    var xmlReq = new XMLHttpRequest();
+  
+    console.log(xmlReq.readyState);
+  
+    xmlReq.onreadystatechange = function () {
+      console.log(xmlReq.readyState);
+      if (this.readyState == 4 && this.status == 200) {
+        // document.getElementById('customer_info').innerHTML = this.responseText;
+        cusinfo(this);
+        // console.log(renXml.readyState);
+      }
+    };
+  
+    xmlReq.open("GET", "D:\MCA\ConstructionManagement\construction.xml", "TRUE");
+  
+    xmlReq.send();
+  }
+  
+  var xmlDoc;
+  var table;
+  var x;
+  
+  function cusinfo(info) {
+    var i;
+    xmlDoc = info.responseXML;
+    // console.log(xmlDoc);
+    displayTable(xmlDoc);
+  }
+      function displayTable(xmlDoc) {
+    table = `<thead><tr>
+    <th>Manager Name</th>
+    <th>Phone Number</th>
+    <th>Address</th>
+    <th>Email</th>
+    <th>Age</th>
+    <th>Projects</th>
+          </tr></thead>`;
+  
+    x = xmlDoc.getElementsByTagName("cd");
+  
+    for (i = 0; i < x.length; i++) {
+      table +=
+        "<tr><td>" +
+        x[i].getElementsByTagName("ManagerName")[0].childNodes[0].nodeValue +
+        "</td><td data-label='Date'>" +
+        x[i].getElementsByTagName("Phone")[0].childNodes[0].nodeValue +
+        "</td><td>" +
+        x[i].getElementsByTagName("Address")[0].childNodes[0].nodeValue +
+        "</td><td>" +
+        x[i].getElementsByTagName("Email")[0].childNodes[0].nodeValue +
+        "</td><td>" +
+        x[i].getElementsByTagName("Age")[0].childNodes[0].nodeValue +
+        "</td><td>" +
+        x[i].getElementsByTagName("Projects")[0].childNodes[0].nodeValue +
+        "</td><td><button onclick='removecus()'> remove </button></td></tr>";
+    }
+    document.getElementById("table").innerHTML = table;
+  }
+  </script>
+
+    <br><br><br>
     <h2 style="text-align: center;"><u>Add Managers</u></h2>
 
     <div>
@@ -242,27 +382,7 @@
         <input type="button" value="Close" id="close" onclick="closeForm()">
         <button onclick ="test()" type="submit">Submit</button>
 
-        <script> 
-          function test()
-          {
-            var Managername=document.getElementById('Managername').value;
-            const regex=/E00/;
-            if(regex.test(Managername))
-            {
-              alert("Valid Name");
-            }
-            else{
-              alert("Not Valid. Please enter correct details");
-            }
-
-            var Phone=document.getElementById('Phone').value;
-            const regex =/E00/;
-            var Address=document.getElementById('Address').value;
-            var Email=document.getElementById('Email').value;
-            var Age=document.getElementById('Age').value;
-            var Projects=document.getElementById('Projects').value;
-          }
-        </script>
+        
     </centre>
       </form>
     
